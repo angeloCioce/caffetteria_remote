@@ -1,55 +1,62 @@
 package com.example.caffetteria.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import com.example.caffetteria.model.Cliente;
-import com.example.caffetteria.repository.ClienteRepository;
+import com.example.caffetteria.service.ClienteService;
 
 @RestController
 @RequestMapping("/cliente")
 public class ClienteController {
 
 	@Autowired
-	private ClienteRepository cli;
+	private ClienteService cli;
 	
-	@PostMapping("/addCliente")
-	public Cliente newCliente(@RequestBody Cliente cliente)
-	{
-		return cli.save(cliente);
-	}
-	
-	@GetMapping("/getClienti")
+	@GetMapping("/clienteList")
 	public List<Cliente> getClienti()
 	{
 		return cli.findAll();
 	}
 	
 	@GetMapping("/getCliente/{id_cliente}")
-	public Cliente getClienteById(@PathVariable Long id_cliente)
+	public Optional<Cliente> findClienteById(@PathVariable("id_cliente") Long id)
 	{
-		return cli.findById(id_cliente).get();
+		return cli.findById(id);
 	}
 	
-	@DeleteMapping("/deleteCliente/{id}")
-	void deleteClienteById(@PathVariable Long id_cliente)
+	@PostMapping("/addCliente")
+	public void saveNewCliente(Cliente cliente)
 	{
-		cli.deleteById(id_cliente);
+		cli.save(cliente);
 	}
 	
-	@PutMapping("/updateCliente/{id_cliente}")
-	public Cliente updateCliente(@RequestBody Cliente newCliente, @PathVariable Long id_cliente)
+	@DeleteMapping("/deleteCliente/{id_cliente}")
+	public void deleteClienteById(@PathVariable("id_cliente") Long id)
 	{
-		cli.deleteById(id_cliente);
-		return cli.save(newCliente);
+		cli.delete(id);
+	}
+	
+	@PatchMapping("update/{id_cliente}")
+	public Cliente updateClienteById(@PathVariable("id_cliente") Long id, @RequestBody String nome, @RequestBody String cognome)
+	{
+		Optional<Cliente> cliente = cli.findById(id);
+		if(cliente.isPresent())
+		{
+			Cliente clientePresente = cliente.get();
+			clientePresente.setNome(nome);
+			clientePresente.setCognome(cognome);
+			return cli.save(clientePresente);
+		}
+
+		else
+			return null;
+
+
 	}
 }

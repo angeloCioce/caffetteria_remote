@@ -38,6 +38,7 @@ public class Ordine {
     @JoinColumn(name = "id_utente")
     private Utente utente;
     
+    @ManyToOne
     @JoinColumn(name = "id_cliente")
     private Cliente cliente;
     
