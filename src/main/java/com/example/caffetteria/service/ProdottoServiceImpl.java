@@ -1,5 +1,6 @@
 package com.example.caffetteria.service;
 
+import com.example.caffetteria.model.Cliente;
 import com.example.caffetteria.model.Ordine;
 import com.example.caffetteria.model.Prodotto;
 import com.example.caffetteria.repository.ProdottoRepository;
@@ -22,13 +23,19 @@ public class ProdottoServiceImpl implements ProdottoService{
 
     @Override
     public Prodotto save(Prodotto prodotto) {
-        prodottoRepository.save(prodotto);
-        return prodotto;
+       return prodottoRepository.save(prodotto);
     }
 
     @Override
-    public Optional<Prodotto> findById(Long id) {
-        return prodottoRepository.findById(id);
+    public Prodotto findById(Long id) {
+
+        Optional<Prodotto> result = prodottoRepository.findById(id);
+        if(result.isPresent()){
+            return result.get();
+        }
+        else{
+            throw new IllegalArgumentException("Prodotto non trovato con id:" + id);
+        }
     }
 
     @Override
@@ -37,19 +44,19 @@ public class ProdottoServiceImpl implements ProdottoService{
     }
 
     @Override
-    public Prodotto update(Long id, String nome_prodotto, String descrizione, Double prezzo_ingrosso, Double prezzo_dettaglio, Integer quantita, String tipologia) {
-        Optional<Prodotto> optionalProdotto = prodottoRepository.findById(id);
-        if (optionalProdotto.isPresent()) {
-            Prodotto prodotto = optionalProdotto.get();
-            prodotto.setNome_prodotto(nome_prodotto);
-            prodotto.setDescrizione(descrizione);
-            prodotto.setQuantita(quantita);
-            prodotto.setPrezzo_ingrosso(prezzo_ingrosso);
-            prodotto.setPrezzo_dettaglio(prezzo_dettaglio);
-            prodotto.setTipologia(tipologia);
+    public Prodotto update(Long id, Prodotto prodottoRequest) {
 
-            return prodottoRepository.save(prodotto);
-        }
-        return null;
+        Prodotto prodotto = prodottoRepository.findById(id)
+                .orElseThrow(()-> new IllegalArgumentException("Prodotto non trovato"));
+
+        prodotto.setNome_prodotto(prodottoRequest.getNome_prodotto());
+        prodotto.setDescrizione(prodottoRequest.getDescrizione());
+        prodotto.setPrezzo_ingrosso(prodottoRequest.getPrezzo_ingrosso());
+        prodotto.setPrezzo_dettaglio(prodottoRequest.getPrezzo_dettaglio());
+        prodotto.setQuantita(prodottoRequest.getQuantita());
+        prodotto.setTipologia(prodottoRequest.getTipologia());
+
+        return prodottoRepository.save(prodotto);
+
     }
 }

@@ -3,7 +3,7 @@ package com.example.caffetteria.dto;
 import lombok.Data;
 
 @Data
-public class Prodotto {
+public class ProdottoDto {
 
     private Long id;
     private String nome_prodotto;

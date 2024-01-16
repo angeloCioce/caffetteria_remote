@@ -27,6 +27,7 @@ public class OrdineServiceImpl implements OrdineService{
 
 	@Override
 	public List<Ordine> findAll() {
+
 		return ordineRepository.findAll();
 	}
 

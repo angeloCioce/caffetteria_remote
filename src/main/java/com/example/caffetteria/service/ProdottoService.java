@@ -14,9 +14,9 @@ public interface ProdottoService {
 
 	    Prodotto save(Prodotto prodotto);
 	     
-	    Optional <Prodotto> findById(Long id);
+	    Prodotto findById(Long id);
 
 	    void delete(Long id);
-	    
-	    Prodotto update(Long id, String nome_prodotto, String descrizione, Double prezzo_ingrosso, Double prezzo_dettaglio, Integer quantita, String tipologia);
+
+		Prodotto update(Long id, Prodotto prodottoRequest);
 }
