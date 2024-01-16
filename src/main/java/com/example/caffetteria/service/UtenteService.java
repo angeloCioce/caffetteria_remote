@@ -13,10 +13,10 @@ public interface UtenteService {
 	 	List <Utente> findAll();
 
 	    Utente save(Utente utente);
-	     
-	    Optional <Utente> findById(Long id);
+
+		Utente findById(Long id);
 
 	    void delete(Long id);
-	    
-	    Ordine update(Long id, String username, String password, String ruolo);
+
+		Utente update(Long id, Utente utenteRequest);
 }

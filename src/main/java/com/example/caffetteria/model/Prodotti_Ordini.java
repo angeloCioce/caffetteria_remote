@@ -24,7 +24,7 @@ public class Prodotti_Ordini {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id_prodotti_ordini;
+	private Long id_prodotti_ordini;
 	
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "id_ordine")
@@ -36,15 +36,4 @@ public class Prodotti_Ordini {
 	
 	@Column(name = "quantita_ordine")
 	private int quantita_ordine;
-
-//	public Ordine getOrdine() {
-//		return ordine;
-//	}
-//
-//	public void setOrdine(Ordine ordine) {
-//		this.ordine = ordine;
-//	}
-	
-	
-
 }

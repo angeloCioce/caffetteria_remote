@@ -10,12 +10,9 @@ import java.util.Optional;
 public interface OrdineService {
 
 	 	List <Ordine> findAll();
-
-	    Ordine save(Ordine ordine);
-	     
-	    Optional <Ordine> findById(Long id);
-
+		Ordine save(Ordine ordine, Long idCliente, Long idUtente);
+		Ordine findById(Long id);
 	    void delete(Long id);
-	    
-	    Ordine update(Long id, LocalDateTime data_ordine, Double prezzo_totale);
+		Ordine update(Long id, Ordine ordineRequest);
+
 }

@@ -37,7 +37,19 @@ public class ProdottoServiceImpl implements ProdottoService{
     }
 
     @Override
-    public Ordine update(Long id, String nome_prodotto, String descrizione, Double prezzo_ingrosso, Double prezzo_dettaglio, Integer quantita, String tipologia) {
+    public Prodotto update(Long id, String nome_prodotto, String descrizione, Double prezzo_ingrosso, Double prezzo_dettaglio, Integer quantita, String tipologia) {
+        Optional<Prodotto> optionalProdotto = prodottoRepository.findById(id);
+        if (optionalProdotto.isPresent()) {
+            Prodotto prodotto = optionalProdotto.get();
+            prodotto.setNome_prodotto(nome_prodotto);
+            prodotto.setDescrizione(descrizione);
+            prodotto.setQuantita(quantita);
+            prodotto.setPrezzo_ingrosso(prezzo_ingrosso);
+            prodotto.setPrezzo_dettaglio(prezzo_dettaglio);
+            prodotto.setTipologia(tipologia);
+
+            return prodottoRepository.save(prodotto);
+        }
         return null;
     }
 }

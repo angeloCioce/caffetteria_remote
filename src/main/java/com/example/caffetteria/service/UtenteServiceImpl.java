@@ -1,5 +1,6 @@
 package com.example.caffetteria.service;
 
+import com.example.caffetteria.model.Cliente;
 import com.example.caffetteria.model.Ordine;
 import com.example.caffetteria.model.Utente;
 import com.example.caffetteria.repository.UtenteRepository;
@@ -22,13 +23,19 @@ public class UtenteServiceImpl implements UtenteService{
 
     @Override
     public Utente save(Utente utente) {
-        utenteRepository.save(utente);
-        return utente;
+        return utenteRepository.save(utente);
     }
 
     @Override
-    public Optional<Utente> findById(Long id) {
-        return utenteRepository.findById(id);
+    public Utente findById(Long id) {
+
+        Optional<Utente> result = utenteRepository.findById(id);
+        if(result.isPresent()){
+            return result.get();
+        }
+        else{
+            throw new IllegalArgumentException("Utente non trovato con id:" + id);
+        }
     }
 
     @Override
@@ -37,7 +44,15 @@ public class UtenteServiceImpl implements UtenteService{
     }
 
     @Override
-    public Ordine update(Long id, String username, String password, String ruolo) {
-        return null;
+    public Utente update(Long id, Utente utenteRequest) {
+
+        Utente utente = utenteRepository.findById(id)
+                .orElseThrow(()-> new IllegalArgumentException("Utente non trovato"));
+
+        utente.setUsername(utenteRequest.getUsername());
+        utente.setPassword(utenteRequest.getPassword());
+        utente.setRuolo(utenteRequest.getRuolo());
+
+        return utenteRepository.save(utente);
     }
 }

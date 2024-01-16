@@ -3,7 +3,12 @@ package com.example.caffetteria.service;
 import java.util.List;
 import java.util.Optional;
 
+import com.azure.core.exception.ResourceNotFoundException;
+import com.azure.core.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
+import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.example.caffetteria.model.Cliente;
@@ -30,16 +35,21 @@ public class ClienteServiceImpl implements ClienteService{
 	@Override
 	public Cliente save(Cliente cliente) {
 		// TODO Auto-generated method stub
-		clienteRepository.save(cliente);
-		return cliente;
+		return clienteRepository.save(cliente);
 	}
 
 	//trova cliente by id
 	
 	@Override
-	public Optional<Cliente> findById(Long id) {
+	public Cliente findById(Long id) {
 		// TODO Auto-generated method stub
-		return clienteRepository.findById(id);
+		Optional<Cliente> result = clienteRepository.findById(id);
+		if(result.isPresent()){
+			return result.get();
+		}
+		else{
+			throw new IllegalArgumentException("Cliente non trovato con id:" + id);
+		}
 	}
 
 	//cancella cliente by id
@@ -51,15 +61,15 @@ public class ClienteServiceImpl implements ClienteService{
 	}
 
 	@Override
-	public Cliente update(Long id, String nome, String cognome)
+	public Cliente update(Long id, Cliente clienteRequest)
 	{
-		// TODO Auto-generated method stub
-		Cliente cliente = clienteRepository.getById(id);
-        
-            cliente.setNome(nome);
-            cliente.setCognome(cognome);
+		Cliente cliente = clienteRepository.findById(id)
+				.orElseThrow(()-> new IllegalArgumentException("Cliente non trovato"));
 
-			return cliente;
+			cliente.setNome(clienteRequest.getNome());
+			cliente.setCognome(clienteRequest.getCognome());
+			return clienteRepository.save(cliente);
+
     }
 	
 }

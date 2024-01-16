@@ -35,32 +35,13 @@ public class Ordine {
     private Double prezzo_totale;
     
     @ManyToOne
-    @JoinColumn(name = "id_utente")
+    @JoinColumn(name = "id_utente", referencedColumnName = "id_utente")
     private Utente utente;
     
     @ManyToOne
-    @JoinColumn(name = "id_cliente")
+    @JoinColumn(name = "id_cliente", referencedColumnName = "id_cliente")
     private Cliente cliente;
     
     @OneToMany(mappedBy = "ordine", cascade = CascadeType.ALL)
     private Set<Prodotti_Ordini> prodottiOrdini = new HashSet<>();
-
-//	public Ordine(Long id_ordine, LocalDateTime data_ordine, Double prezzo_totale, Prodotti_Ordini...prodottiOrdini) {
-//		this.id_ordine = id_ordine;
-//		this.data_ordine = data_ordine;
-//		this.prezzo_totale = prezzo_totale;
-//		for(Prodotti_Ordini prodottoOrdine : prodottiOrdini) prodottoOrdine.setOrdine(this);
-//		this.prodottiOrdini = Stream.of(prodottiOrdini).collect(Collectors.toSet());
-//	}
-//    
-    
-    
-    
-//    
-//    @ManyToMany(cascade = { CascadeType.ALL })
-//    @JoinTable(
-//            name = "prodotti_ordini",
-//            joinColumns =  @JoinColumn(name = "id_ordine"),
-//            inverseJoinColumns = @JoinColumn(name = "id_prodotto") )
-//    Set<Prodotto> prodotto_ordinato;
 }

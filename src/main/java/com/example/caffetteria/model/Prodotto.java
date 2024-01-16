@@ -39,7 +39,4 @@ public class Prodotto {
     
     @OneToMany(mappedBy = "prodotto", cascade = CascadeType.ALL)
     private Set<Prodotti_Ordini> prodottiOrdini = new HashSet<>();
-    
-//    @ManyToMany(mappedBy = "prodotto_ordinato")
-//    Set<Ordine> prodotto_ordinato;
 }

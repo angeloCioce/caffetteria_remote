@@ -10,10 +10,10 @@ public interface ClienteService {
 	 	List <Cliente> findAll();
 
 	    Cliente save(Cliente cliente);
-	     
-	    Optional <Cliente> findById(Long id);
+
+		Cliente findById(Long id);
 
 	    void delete(Long id);
-	    
-	    Cliente update(Long id,  String nome, String cognome);
+
+		Cliente update(Long id, Cliente clienteRequest);
 }

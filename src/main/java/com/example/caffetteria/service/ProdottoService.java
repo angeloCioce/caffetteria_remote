@@ -18,5 +18,5 @@ public interface ProdottoService {
 
 	    void delete(Long id);
 	    
-	    Ordine update(Long id, String nome_prodotto, String descrizione, Double prezzo_ingrosso, Double prezzo_dettaglio, Integer quantita, String tipologia);
+	    Prodotto update(Long id, String nome_prodotto, String descrizione, Double prezzo_ingrosso, Double prezzo_dettaglio, Integer quantita, String tipologia);
 }
