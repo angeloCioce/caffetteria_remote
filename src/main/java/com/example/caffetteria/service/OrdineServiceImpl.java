@@ -6,6 +6,7 @@ import com.example.caffetteria.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,8 +81,8 @@ public class OrdineServiceImpl implements OrdineService{
 		Ordine ordine = ordineRepository.findById(id)
 				.orElseThrow(()-> new IllegalArgumentException("Ordine non trovato"));
 
-		ordine.setData_ordine(ordineRequest.getData_ordine());
-		ordine.setPrezzo_totale(ordineRequest.getPrezzo_totale());
+		ordine.setData_ordine(LocalDateTime.parse(ordineRequest.getData_ordine().toString()));
+		ordine.setPrezzo_totale(Double.valueOf(ordineRequest.getPrezzo_totale().toString()));
 		return ordineRepository.save(ordine);
 	}
 }
