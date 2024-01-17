@@ -1,16 +1,11 @@
 package com.example.caffetteria.service;
 
 
-import com.example.caffetteria.model.Cliente;
-import com.example.caffetteria.model.Ordine;
-import com.example.caffetteria.model.Utente;
-import com.example.caffetteria.repository.ClienteRepository;
-import com.example.caffetteria.repository.OrdineRepository;
-import com.example.caffetteria.repository.UtenteRepository;
+import com.example.caffetteria.model.*;
+import com.example.caffetteria.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,6 +19,11 @@ public class OrdineServiceImpl implements OrdineService{
 	private UtenteRepository utenteRepository;
 	@Autowired
 	private ClienteRepository clienteRepository;
+	@Autowired
+	private ProdottoOrdiniRepository prodottoOrdiniRepository;
+	@Autowired
+	private ProdottoRepository prodottoRepository;
+
 
 	@Override
 	public List<Ordine> findAll() {
@@ -32,15 +32,30 @@ public class OrdineServiceImpl implements OrdineService{
 	}
 
 	@Override
-	public Ordine save(Ordine ordine, Long idCliente, Long idUtente) {
+	public Ordine save(Ordine ordine, Long idCliente, Long idUtente, Long idProdotto, Integer quantitaOrdine) {
 		Cliente cliente = clienteRepository.findById(idCliente)
 				.orElseThrow(() -> new IllegalArgumentException("Cliente non trovato"));
 		Utente utente = utenteRepository.findById(idUtente)
 				.orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
+		Prodotto prodotto = prodottoRepository.findById(idProdotto)
+				.orElseThrow(() -> new IllegalArgumentException("Prodotto non trovato"));
 
 		ordine.setCliente(cliente);
 		ordine.setUtente(utente);
-		return ordineRepository.save(ordine);
+
+
+		Prodotti_Ordini prodottiOrdini = new Prodotti_Ordini();
+		prodottiOrdini.setOrdine(ordine);
+		prodottiOrdini.setProdotto(prodotto);
+		prodottiOrdini.setQuantita_ordine(quantitaOrdine);
+
+		ordine.setPrezzo_totale(prodotto.getPrezzo_dettaglio()*quantitaOrdine);
+
+		ordineRepository.save(ordine);
+		prodottoOrdiniRepository.save(prodottiOrdini);
+
+
+		return ordine;
 	}
 
 	@Override

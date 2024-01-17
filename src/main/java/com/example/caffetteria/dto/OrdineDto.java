@@ -12,6 +12,6 @@ public class OrdineDto {
     private Double prezzo_totale;
     private Long id_cliente;
     private Long id_utente;
-    private Long id_prodotto_ordine;
-    private Integer quantita_totale;
+    private Long id_prodotto;
+    private Integer quantita_ordine;
 }

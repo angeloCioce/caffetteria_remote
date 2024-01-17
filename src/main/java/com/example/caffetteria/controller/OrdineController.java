@@ -54,10 +54,14 @@ public class OrdineController {
 	}
 	
 	@PostMapping("/addOrdine")
-	public ResponseEntity<OrdineDto> saveNewOrdine(@RequestBody OrdineDto ordineDto )
+	public ResponseEntity<OrdineDto> saveNewOrdine(@RequestBody OrdineDto ordineDto)
 	{
 		Ordine ordineRequest = modelMapper.map(ordineDto, Ordine.class);
-		Ordine ordine = ord.save(ordineRequest, ordineDto.getId_cliente(), ordineDto.getId_utente());
+		Ordine ordine = ord.save(ordineRequest,
+				ordineDto.getId_cliente(),
+				ordineDto.getId_utente(),
+				ordineDto.getId_prodotto(),
+				ordineDto.getQuantita_ordine());
 		OrdineDto ordineResponse = modelMapper.map(ordine, OrdineDto.class);
 		return  new ResponseEntity<OrdineDto>(ordineResponse, HttpStatus.CREATED);
 	}
