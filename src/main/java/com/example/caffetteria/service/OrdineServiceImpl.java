@@ -1,6 +1,5 @@
 package com.example.caffetteria.service;
 
-
 import com.example.caffetteria.dto.OrdineDto;
 import com.example.caffetteria.dto.ProdottoDto;
 import com.example.caffetteria.model.*;
@@ -8,11 +7,8 @@ import com.example.caffetteria.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -37,31 +33,6 @@ public class OrdineServiceImpl implements OrdineService{
 	public List<OrdineDto> findAll() {
 		List<Ordine> ordini = ordineRepository.findAll();
 		return ordini.stream().map(this::mapToOrdineDtoWithDetails).collect(Collectors.toList());
-	}
-
-	private OrdineDto mapToOrdineDtoWithDetails(Ordine ordine) {
-		OrdineDto ordineDto = modelMapper.map(ordine, OrdineDto.class);
-
-		// Aggiungi i dettagli dei prodotti
-		List<Prodotti_Ordini> prodottiOrdini = prodottoOrdiniRepository.findByOrdine(ordine);
-		List<ProdottoDto> prodottiDto = prodottiOrdini.stream()
-				.map(po -> modelMapper.map(po.getProdotto(), ProdottoDto.class))
-				.collect(Collectors.toList());
-		ordineDto.setProdotti(prodottiDto);
-
-		// Aggiungi le generalità di utente
-		if (ordine.getUtente() != null) {
-			// Puoi aggiungere i dettagli dell'utente come nome, cognome, ecc.
-			ordineDto.setId_utente(ordine.getUtente().getId_utente());
-		}
-
-		// Aggiungi le generalità del cliente
-		if (ordine.getCliente() != null) {
-			// Puoi aggiungere i dettagli del cliente come nome, cognome, ecc.
-			ordineDto.setId_cliente(ordine.getCliente().getId());
-		}
-
-		return ordineDto;
 	}
 
 	@Override
@@ -95,14 +66,11 @@ public class OrdineServiceImpl implements OrdineService{
 			prodottoOrdiniRepository.save(prodottiOrdini);
 		}
 
-
 		ordine.setPrezzo_totale(prezzoTotale);
 		ordineRepository.save(ordine);
 
-
 		return ordine;
 	}
-
 
 	@Override
 	public OrdineDto findById(Long id) {
@@ -111,7 +79,22 @@ public class OrdineServiceImpl implements OrdineService{
 		return mapToOrdineDtoWithDetails(ordine);
 	}
 
-	private OrdineDto mapToOrdinetoWithDetails(Ordine ordine) {
+	@Override
+	public void delete(Long id) {
+		ordineRepository.deleteById(id);
+	}
+
+	@Override
+	public Ordine update(Long id, Ordine ordineRequest) {
+		Ordine ordine = ordineRepository.findById(id)
+				.orElseThrow(()-> new IllegalArgumentException("Ordine non trovato"));
+
+		ordine.setData_ordine(LocalDateTime.parse(ordineRequest.getData_ordine().toString()));
+		ordine.setPrezzo_totale(Double.valueOf(ordineRequest.getPrezzo_totale().toString()));
+		return ordineRepository.save(ordine);
+	}
+
+	private OrdineDto mapToOrdineDtoWithDetails(Ordine ordine) {
 		OrdineDto ordineDto = modelMapper.map(ordine, OrdineDto.class);
 
 		// Aggiungi i dettagli dei prodotti
@@ -134,21 +117,6 @@ public class OrdineServiceImpl implements OrdineService{
 		}
 
 		return ordineDto;
-	}
-
-	@Override
-	public void delete(Long id) {
-		ordineRepository.deleteById(id);
-	}
-
-	@Override
-	public Ordine update(Long id, Ordine ordineRequest) {
-		Ordine ordine = ordineRepository.findById(id)
-				.orElseThrow(()-> new IllegalArgumentException("Ordine non trovato"));
-
-		ordine.setData_ordine(LocalDateTime.parse(ordineRequest.getData_ordine().toString()));
-		ordine.setPrezzo_totale(Double.valueOf(ordineRequest.getPrezzo_totale().toString()));
-		return ordineRepository.save(ordine);
 	}
 }
 	
