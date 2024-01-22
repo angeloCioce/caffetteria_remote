@@ -1,12 +1,17 @@
 package com.example.caffetteria.service;
 
 
+import com.example.caffetteria.dto.OrdineDto;
+import com.example.caffetteria.dto.ProdottoDto;
 import com.example.caffetteria.model.*;
 import com.example.caffetteria.repository.*;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,31 +38,44 @@ public class OrdineServiceImpl implements OrdineService{
 	}
 
 	@Override
-	public Ordine save(Ordine ordine, Long idCliente, Long idUtente, Long idProdotto, Integer quantitaOrdine) {
-		Cliente cliente = clienteRepository.findById(idCliente)
+	public Ordine save(OrdineDto ordineDto) {
+		Cliente cliente = clienteRepository.findById(ordineDto.getId_cliente())
 				.orElseThrow(() -> new IllegalArgumentException("Cliente non trovato"));
-		Utente utente = utenteRepository.findById(idUtente)
+		Utente utente = utenteRepository.findById(ordineDto.getId_utente())
 				.orElseThrow(() -> new IllegalArgumentException("Utente non trovato"));
-		Prodotto prodotto = prodottoRepository.findById(idProdotto)
-				.orElseThrow(() -> new IllegalArgumentException("Prodotto non trovato"));
 
-		ordine.setCliente(cliente);
-		ordine.setUtente(utente);
+        Double prezzoTotale = 0.0;
 
-
-		Prodotti_Ordini prodottiOrdini = new Prodotti_Ordini();
-		prodottiOrdini.setOrdine(ordine);
-		prodottiOrdini.setProdotto(prodotto);
-		prodottiOrdini.setQuantita_ordine(quantitaOrdine);
-
-		ordine.setPrezzo_totale(prodotto.getPrezzo_dettaglio()*quantitaOrdine);
+		Ordine ordine = Ordine.builder()
+				.data_ordine(LocalDateTime.now())
+				.prezzo_totale(prezzoTotale)
+				.cliente(cliente)
+				.utente(utente)
+				.build();
 
 		ordineRepository.save(ordine);
-		prodottoOrdiniRepository.save(prodottiOrdini);
+
+		for (ProdottoDto prodottoDto : ordineDto.getProdotti()) {
+			Prodotto prodotto = prodottoRepository.findById(prodottoDto.getId_prodotto())
+					.orElseThrow(() -> new IllegalArgumentException("Prodotto non trovato"));
+
+			Prodotti_Ordini prodottiOrdini = new Prodotti_Ordini();
+			prodottiOrdini.setOrdine(ordine);
+			prodottiOrdini.setProdotto(prodotto);
+			prodottiOrdini.setQuantita_ordine(prodottoDto.getQuantita_ordine());
+			prezzoTotale += prodotto.getPrezzo_dettaglio() * prodottoDto.getQuantita_ordine();
+
+			prodottoOrdiniRepository.save(prodottiOrdini);
+		}
+
+
+		ordine.setPrezzo_totale(prezzoTotale);
+		ordineRepository.save(ordine);
 
 
 		return ordine;
 	}
+
 
 	@Override
 	public Ordine findById(Long id) {

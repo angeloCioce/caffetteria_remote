@@ -3,6 +3,8 @@ package com.example.caffetteria.model;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -43,5 +45,6 @@ public class Ordine {
     private Cliente cliente;
     
     @OneToMany(mappedBy = "ordine", cascade = CascadeType.ALL)
+    @JsonIgnore
     private Set<Prodotti_Ordini> prodottiOrdini = new HashSet<>();
 }

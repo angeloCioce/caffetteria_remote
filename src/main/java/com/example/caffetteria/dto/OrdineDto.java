@@ -1,8 +1,10 @@
 package com.example.caffetteria.dto;
 
+import com.example.caffetteria.model.Prodotto;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 public class OrdineDto {
@@ -12,6 +14,5 @@ public class OrdineDto {
     private Double prezzo_totale;
     private Long id_cliente;
     private Long id_utente;
-    private Long id_prodotto;
-    private Integer quantita_ordine;
+    private List<ProdottoDto> prodotti;
 }

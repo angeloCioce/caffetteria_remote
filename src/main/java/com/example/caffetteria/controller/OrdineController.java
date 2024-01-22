@@ -2,6 +2,7 @@ package com.example.caffetteria.controller;
 
 import com.example.caffetteria.dto.ClienteDto;
 import com.example.caffetteria.dto.OrdineDto;
+import com.example.caffetteria.dto.ProdottoDto;
 import com.example.caffetteria.dto.UtenteDto;
 import com.example.caffetteria.model.Cliente;
 import com.example.caffetteria.model.Ordine;
@@ -33,7 +34,7 @@ import java.util.stream.Collectors;
 public class OrdineController {
 
 	@Autowired
-	private OrdineService ord;
+	private OrdineService ordineService;
 	@Autowired
 	private ModelMapper modelMapper;
 
@@ -41,7 +42,7 @@ public class OrdineController {
 	public List<OrdineDto> getOrdine()
 	{
 
-		return ord.findAll().stream().map(ordine->modelMapper.map(ordine, OrdineDto.class))
+		return ordineService.findAll().stream().map(ordine->modelMapper.map(ordine, OrdineDto.class))
 				.collect(Collectors.toList());
 	}
 	
@@ -49,43 +50,28 @@ public class OrdineController {
 	public ResponseEntity<OrdineDto> findOrdineById(@PathVariable("id_ordine") Long id)
 	{
 
-		Ordine ordine = ord.findById(id);
+		Ordine ordine = ordineService.findById(id);
 		OrdineDto ordineResponse = modelMapper.map(ordine, OrdineDto.class);
 		return ResponseEntity.ok().body(ordineResponse);
 	}
-	
+
 	@PostMapping("/addOrdine")
-	public ResponseEntity<List<OrdineDto>> saveNewOrdine(@RequestBody List<OrdineDto> ordiniDto) {
-		List<Ordine> ordini = new ArrayList<>();
-
-		for (OrdineDto ordineDto : ordiniDto) {
-			Ordine ordineRequest = modelMapper.map(ordineDto, Ordine.class);
-			Ordine ordine = ord.save(ordineRequest,
-					ordineDto.getId_cliente(),
-					ordineDto.getId_utente(),
-					ordineDto.getId_prodotto(),
-					ordineDto.getQuantita_ordine());
-			ordini.add(ordine);
-		}
-
-		List<OrdineDto> ordiniResponse = ordini.stream()
-				.map(ordine -> modelMapper.map(ordine, OrdineDto.class))
-				.collect(Collectors.toList());
-
-		return new ResponseEntity<List<OrdineDto>>(ordiniResponse, HttpStatus.CREATED);
+	public ResponseEntity<OrdineDto> saveNewOrdine(@RequestBody OrdineDto ordineDto) {
+		Ordine ordine = ordineService.save(ordineDto);
+		return new ResponseEntity<>(ordineDto, HttpStatus.CREATED);
 	}
 
 	@DeleteMapping("/deleteOrdine/{id_ordine}")
 	public ResponseEntity<String> deleteOrdineById(@PathVariable("id_ordine") Long id)
 	{
-		ord.delete(id);
+		ordineService.delete(id);
 		String apiResponse = ("Record deleted successfully");
 		return new ResponseEntity<String>(apiResponse, HttpStatus.OK);
 	}
 	@PatchMapping("update/{id_ordine}")
 	public ResponseEntity<OrdineDto> updateOrdineById(@PathVariable("id_ordine") Long id, @RequestBody OrdineDto ordineDto) {
 		Ordine ordineRequest = modelMapper.map(ordineDto, Ordine.class);
-		Ordine ordine = ord.update(id, ordineRequest);
+		Ordine ordine = ordineService.update(id, ordineRequest);
 		OrdineDto ordineResponse = modelMapper.map(ordine, OrdineDto.class);
 		return ResponseEntity.ok().body(ordineResponse);
 	}
