@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface OrdineService {
 
-	 	List <Ordine> findAll();
+	 	List <OrdineDto> findAll();
 		Ordine save(OrdineDto ordineDto);
-		Ordine findById(Long id);
+		OrdineDto findById(Long id);
 	    void delete(Long id);
 		Ordine update(Long id, Ordine ordineRequest);
 

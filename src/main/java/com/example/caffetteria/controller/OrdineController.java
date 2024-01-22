@@ -42,16 +42,13 @@ public class OrdineController {
 	public List<OrdineDto> getOrdine()
 	{
 
-		return ordineService.findAll().stream().map(ordine->modelMapper.map(ordine, OrdineDto.class))
-				.collect(Collectors.toList());
+		return ordineService.findAll();
 	}
 	
 	@GetMapping("/getOrdine/{id_ordine}")
 	public ResponseEntity<OrdineDto> findOrdineById(@PathVariable("id_ordine") Long id)
 	{
-
-		Ordine ordine = ordineService.findById(id);
-		OrdineDto ordineResponse = modelMapper.map(ordine, OrdineDto.class);
+		OrdineDto ordineResponse = ordineService.findById(id);
 		return ResponseEntity.ok().body(ordineResponse);
 	}
 
