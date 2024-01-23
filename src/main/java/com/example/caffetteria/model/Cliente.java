@@ -27,8 +27,9 @@ public class Cliente {
     @GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id_cliente")
     private Long id;
-	
+    @Column(name = "nome")
     private String nome;
+    @Column(name = "cognome")
     private String cognome;
     
     @OneToMany(mappedBy = "cliente")

@@ -100,20 +100,23 @@ public class OrdineServiceImpl implements OrdineService{
 		// Aggiungi i dettagli dei prodotti
 		List<Prodotti_Ordini> prodottiOrdini = prodottoOrdiniRepository.findByOrdine(ordine);
 		List<ProdottoDto> prodottiDto = prodottiOrdini.stream()
-				.map(po -> modelMapper.map(po.getProdotto(), ProdottoDto.class))
+				.map(po -> {
+					ProdottoDto prodottoDto = modelMapper.map(po.getProdotto(), ProdottoDto.class);
+					prodottoDto.setQuantita_ordine(po.getQuantita_ordine()); // Assicurati di includere la quantità
+					return prodottoDto;
+				})
 				.collect(Collectors.toList());
 		ordineDto.setProdotti(prodottiDto);
 
-		// Aggiungi le generalità di utente
 		if (ordine.getUtente() != null) {
-			// Puoi aggiungere i dettagli dell'utente come nome, cognome, ecc.
 			ordineDto.setId_utente(ordine.getUtente().getId_utente());
+			ordineDto.setUsername_utente(ordine.getUtente().getUsername());
 		}
 
-		// Aggiungi le generalità del cliente
 		if (ordine.getCliente() != null) {
-			// Puoi aggiungere i dettagli del cliente come nome, cognome, ecc.
 			ordineDto.setId_cliente(ordine.getCliente().getId());
+			ordineDto.setNome_cliente(ordine.getCliente().getNome());
+			ordineDto.setCognome_cliente(ordine.getCliente().getCognome());
 		}
 
 		return ordineDto;
