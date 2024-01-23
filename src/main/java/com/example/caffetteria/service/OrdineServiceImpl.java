@@ -8,7 +8,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -53,20 +55,36 @@ public class OrdineServiceImpl implements OrdineService{
 
 		ordineRepository.save(ordine);
 
-		for (ProdottoDto prodottoDto : ordineDto.getProdotti()) {
-			Prodotto prodotto = prodottoRepository.findById(prodottoDto.getId_prodotto())
+		Set<Prodotti_Ordini> listaProdotti = new HashSet<>();
+		Double tot = 0D;
+		ordineDto.getProdotti().forEach(e ->{
+			Prodotto prodotto = prodottoRepository.findById(e.getId_prodotto())
 					.orElseThrow(() -> new IllegalArgumentException("Prodotto non trovato"));
 
-			Prodotti_Ordini prodottiOrdini = new Prodotti_Ordini();
-			prodottiOrdini.setOrdine(ordine);
-			prodottiOrdini.setProdotto(prodotto);
-			prodottiOrdini.setQuantita_ordine(prodottoDto.getQuantita_ordine());
-			prezzoTotale += prodotto.getPrezzo_dettaglio() * prodottoDto.getQuantita_ordine();
+			Prodotti_Ordini p = new Prodotti_Ordini();
+			p.setOrdine(ordine);
+			p.setProdotto(prodotto);
+			p.setQuantita_ordine(e.getQuantita_ordine());
+			//tot += prodotto.getPrezzo_dettaglio() * e.getQuantita_ordine();
+			listaProdotti.add(p);
+		});
+		ordine.setProdottiOrdini(listaProdotti);
 
-			prodottoOrdiniRepository.save(prodottiOrdini);
-		}
 
-		ordine.setPrezzo_totale(prezzoTotale);
+//		for (ProdottoDto prodottoDto : ordineDto.getProdotti()) {
+//			Prodotto prodotto = prodottoRepository.findById(prodottoDto.getId_prodotto())
+//					.orElseThrow(() -> new IllegalArgumentException("Prodotto non trovato"));
+//
+//			Prodotti_Ordini prodottiOrdini = new Prodotti_Ordini();
+//			prodottiOrdini.setOrdine(ordine);
+//			prodottiOrdini.setProdotto(prodotto);
+//			prodottiOrdini.setQuantita_ordine(prodottoDto.getQuantita_ordine());
+//			prezzoTotale += prodotto.getPrezzo_dettaglio() * prodottoDto.getQuantita_ordine();
+//
+//			prodottoOrdiniRepository.save(prodottiOrdini);
+//		}
+//
+//		ordine.setPrezzo_totale(prezzoTotale);
 		ordineRepository.save(ordine);
 
 		return ordine;

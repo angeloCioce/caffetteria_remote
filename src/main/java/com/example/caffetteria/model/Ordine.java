@@ -44,7 +44,7 @@ public class Ordine {
     @JoinColumn(name = "id_cliente", referencedColumnName = "id_cliente")
     private Cliente cliente;
     
-    @OneToMany(mappedBy = "ordine", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "ordine", cascade = CascadeType.PERSIST)
     @JsonIgnore
     private Set<Prodotti_Ordini> prodottiOrdini = new HashSet<>();
 }

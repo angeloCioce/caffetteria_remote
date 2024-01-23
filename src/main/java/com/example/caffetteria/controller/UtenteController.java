@@ -69,4 +69,19 @@ public class UtenteController {
 		UtenteDto utenteResponse = modelMapper.map(utente, UtenteDto.class);
 		return ResponseEntity.ok().body(utenteResponse);
 	}
+
+	@PatchMapping("/changePassword")
+	public ResponseEntity<String> changePasswordByUsername(@RequestParam String username, @RequestBody String newPassword) {
+		Utente utente = ut.findByUsername(username);
+		ut.changePassword(utente.getId_utente(), newPassword);
+		String apiResponse = "Password cambiata con successo";
+		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+	}
+
+//	@PatchMapping("/changeUsername")
+//	public ResponseEntity<String> changeUsername(@RequestBody ChangeUsernameRequest request) {
+//		Utente utente = ut.changeUsername(request.getOldUsername(), request.getNewUsername(), request.getPassword());
+//		String apiResponse = "Username cambiato con successo per l'utente con username: " + request.getOldUsername();
+//		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
+//	}
 }

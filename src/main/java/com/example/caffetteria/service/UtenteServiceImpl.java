@@ -1,7 +1,5 @@
 package com.example.caffetteria.service;
 
-import com.example.caffetteria.model.Cliente;
-import com.example.caffetteria.model.Ordine;
 import com.example.caffetteria.model.Utente;
 import com.example.caffetteria.repository.UtenteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +51,32 @@ public class UtenteServiceImpl implements UtenteService{
         utente.setPassword(utenteRequest.getPassword());
         utente.setRuolo(utenteRequest.getRuolo());
 
+        return utenteRepository.save(utente);
+    }
+
+    public Utente findByUsername(String username) {
+        return utenteRepository.findByUsername(username)
+                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato con username: " + username));
+    }
+
+   /* @Override
+    public Utente changeUsername(String oldUsername, String newUsername, String password) {
+        Utente utente = utenteRepository.findByUsername(oldUsername)
+                .orElseThrow(() -> new IllegalArgumentException("Utente non trovato con username: " + oldUsername));
+
+        if (!passwordEncoder.matches(password, utente.getPassword())) {
+            throw new IllegalArgumentException("La password fornita non è corretta");
+        }
+
+        utente.setUsername(newUsername);
+
+        return utenteRepository.save(utente);
+    }*/
+
+    public Utente changePassword(Long id, String newPassword){
+        Utente utente = utenteRepository.findById(id)
+                .orElseThrow(()->new IllegalArgumentException("Utente non trovato"));
+        utente.setPassword(newPassword);
         return utenteRepository.save(utente);
     }
 }

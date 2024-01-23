@@ -19,4 +19,9 @@ public interface UtenteService {
 	    void delete(Long id);
 
 		Utente update(Long id, Utente utenteRequest);
+
+		Utente changePassword(Long id, String newPassword);
+		Utente findByUsername(String username);
+
+//		Utente changeUsername(String oldUsername, String newUsername, String password);
 }
