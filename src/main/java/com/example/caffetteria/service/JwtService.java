@@ -16,7 +16,7 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-    private static final String SECRET_KEY = "40f9bd997ccc7a4334bb9979e967e9a95eb30f13989131f09c4cb4a57589f176";
+    private static final String SECRET_KEY = "4f3eebfe93ff3cf718cd47c8b4149eac0c2fc02865cb77f35172ea29c645c1df";
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()                    // we generate the parser
