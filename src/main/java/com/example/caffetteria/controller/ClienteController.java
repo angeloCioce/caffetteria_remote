@@ -1,8 +1,6 @@
 package com.example.caffetteria.controller;
 
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import com.example.caffetteria.dto.ClienteDto;
@@ -54,7 +52,7 @@ public class ClienteController {
 	{
 		cli.delete(id);
 		String apiResponse = ("Record deleted successfully");
-        return new ResponseEntity<String>(apiResponse, HttpStatus.OK);
+        return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
 	
 	@PatchMapping("update/{id_cliente}")

@@ -3,12 +3,7 @@ package com.example.caffetteria.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.azure.core.exception.ResourceNotFoundException;
-import com.azure.core.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.config.ConfigDataResourceNotFoundException;
-import org.springframework.data.crossstore.ChangeSetPersister;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import com.example.caffetteria.model.Cliente;

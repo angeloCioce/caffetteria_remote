@@ -1,29 +1,33 @@
 package com.example.caffetteria.controller;
 
-import com.example.caffetteria.dto.ClienteDto;
+
+import com.example.caffetteria.dto.AuthenticationRequest;
+import com.example.caffetteria.dto.AuthenticationResponse;
+import com.example.caffetteria.dto.RegisterRequest;
 import com.example.caffetteria.dto.UtenteDto;
-import com.example.caffetteria.model.Cliente;
 import com.example.caffetteria.model.Utente;
+import com.example.caffetteria.service.AuthenticationService;
 import com.example.caffetteria.service.UtenteService;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/utente")
+@RequiredArgsConstructor
 public class UtenteController {
 
 	@Autowired
 	private UtenteService ut;
 	@Autowired
 	private ModelMapper modelMapper;
+	@Autowired
+	private final AuthenticationService authenticationService;
 	
 	@GetMapping("/utenteList")
 	public List<UtenteDto> getUtente()
@@ -72,16 +76,26 @@ public class UtenteController {
 
 	@PatchMapping("/changePassword")
 	public ResponseEntity<String> changePasswordByUsername(@RequestParam String username, @RequestBody String newPassword) {
-		Utente utente = ut.findByUsername(username);
+		Utente utente = ut.loadUserByUsername(username);
 		ut.changePassword(utente.getId_utente(), newPassword);
 		String apiResponse = "Password cambiata con successo";
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
 
-//	@PatchMapping("/changeUsername")
-//	public ResponseEntity<String> changeUsername(@RequestBody ChangeUsernameRequest request) {
-//		Utente utente = ut.changeUsername(request.getOldUsername(), request.getNewUsername(), request.getPassword());
-//		String apiResponse = "Username cambiato con successo per l'utente con username: " + request.getOldUsername();
-//		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
-//	}
+
+	@PostMapping("/register")
+	public ResponseEntity<AuthenticationResponse> register(
+			@RequestBody RegisterRequest request
+	) {
+
+		return ResponseEntity.ok(authenticationService.register(request));
+    }
+
+	@PostMapping("/atuhenticate")
+	public ResponseEntity<AuthenticationResponse> register(
+			@RequestBody AuthenticationRequest request
+	) {
+
+		return ResponseEntity.ok(authenticationService.authenticate(request));
+    }
 }

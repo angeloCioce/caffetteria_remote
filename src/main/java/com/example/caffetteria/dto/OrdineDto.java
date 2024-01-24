@@ -1,6 +1,5 @@
 package com.example.caffetteria.dto;
 
-import com.example.caffetteria.model.Prodotto;
 import lombok.Data;
 
 import java.time.LocalDateTime;

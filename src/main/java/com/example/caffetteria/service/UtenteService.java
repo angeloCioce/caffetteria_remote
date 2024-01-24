@@ -1,12 +1,9 @@
 package com.example.caffetteria.service;
 
-import com.example.caffetteria.model.Cliente;
-import com.example.caffetteria.model.Ordine;
-import com.example.caffetteria.model.Prodotto;
 import com.example.caffetteria.model.Utente;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UtenteService {
 
@@ -20,8 +17,7 @@ public interface UtenteService {
 
 		Utente update(Long id, Utente utenteRequest);
 
-		Utente changePassword(Long id, String newPassword);
-		Utente findByUsername(String username);
+		void changePassword(Long id, String newPassword);
+		Utente loadUserByUsername(String username);
 
-//		Utente changeUsername(String oldUsername, String newUsername, String password);
 }

@@ -1,11 +1,7 @@
 package com.example.caffetteria.controller;
 
-import com.example.caffetteria.dto.ClienteDto;
 import com.example.caffetteria.dto.ProdottoDto;
-import com.example.caffetteria.model.Cliente;
-import com.example.caffetteria.model.Ordine;
 import com.example.caffetteria.model.Prodotto;
-import com.example.caffetteria.service.ClienteService;
 import com.example.caffetteria.service.ProdottoService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,11 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
