@@ -1,7 +1,6 @@
 package com.example.caffetteria.service;
 
 import com.example.caffetteria.model.Utente;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 

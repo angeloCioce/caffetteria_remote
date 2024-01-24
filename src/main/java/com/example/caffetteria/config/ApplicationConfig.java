@@ -1,7 +1,6 @@
 package com.example.caffetteria.config;
 
 import com.example.caffetteria.repository.UtenteRepository;
-import com.example.caffetteria.service.UtenteService;
 import com.example.caffetteria.service.UtenteServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;

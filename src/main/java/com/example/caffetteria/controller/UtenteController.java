@@ -53,7 +53,7 @@ public class UtenteController {
 		Utente utenteRequest = modelMapper.map(utenteDto, Utente.class);
 		Utente utente = ut.save(utenteRequest);
 		UtenteDto utenteResponse = modelMapper.map(utente, UtenteDto.class);
-		return  new ResponseEntity<UtenteDto>(utenteResponse, HttpStatus.CREATED);
+		return new ResponseEntity<>(utenteResponse, HttpStatus.CREATED);
 	}
 	
 	@DeleteMapping("/deleteUtente/{id_utente}")
@@ -62,7 +62,7 @@ public class UtenteController {
 
 		ut.delete(id);
 		String apiResponse = ("Record deleted successfully");
-		return new ResponseEntity<String>(apiResponse, HttpStatus.OK);
+		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
 
 	@PatchMapping("update/{id_utente}")

@@ -45,7 +45,7 @@ public class ProdottoController {
 		Prodotto prodottoRequest = modelMapper.map(prodottoDto, Prodotto.class);
 		Prodotto prodotto = prod.save(prodottoRequest);
 		ProdottoDto prodottoResponse = modelMapper.map(prodotto, ProdottoDto.class);
-		return  new ResponseEntity<ProdottoDto>(prodottoResponse, HttpStatus.CREATED);
+		return new ResponseEntity<>(prodottoResponse, HttpStatus.CREATED);
 	}
 	
 	@DeleteMapping("/deleteProdotto/{id_prodotto}")
@@ -53,7 +53,7 @@ public class ProdottoController {
 	{
 		prod.delete(id);
 		String apiResponse = ("Record deleted successfully");
-		return new ResponseEntity<String>(apiResponse, HttpStatus.OK);
+		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
 
 	@PatchMapping("update/{id_prodotto}")

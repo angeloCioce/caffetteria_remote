@@ -44,7 +44,7 @@ public class ClienteController {
 		Cliente clienteRequest = modelMapper.map(clienteDto, Cliente.class);
 		Cliente cliente = cli.save(clienteRequest);
 		ClienteDto clienteResponse = modelMapper.map(cliente, ClienteDto.class);
-		return  new ResponseEntity<ClienteDto>(clienteResponse, HttpStatus.CREATED);
+		return new ResponseEntity<>(clienteResponse, HttpStatus.CREATED);
 	}
 	
 	@DeleteMapping("/deleteCliente/{id_cliente}")

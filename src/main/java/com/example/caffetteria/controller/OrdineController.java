@@ -45,7 +45,7 @@ public class OrdineController {
 	{
 		ordineService.delete(id);
 		String apiResponse = ("Record deleted successfully");
-		return new ResponseEntity<String>(apiResponse, HttpStatus.OK);
+		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
 	@PatchMapping("update/{id_ordine}")
 	public ResponseEntity<OrdineDto> updateOrdineById(@PathVariable("id_ordine") Long id, @RequestBody OrdineDto ordineDto) {
