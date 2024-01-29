@@ -5,14 +5,20 @@ import com.example.caffetteria.dto.AuthenticationRequest;
 import com.example.caffetteria.dto.AuthenticationResponse;
 import com.example.caffetteria.dto.RegisterRequest;
 import com.example.caffetteria.dto.UtenteDto;
+import com.example.caffetteria.exceptionhandler.ErrorResponse;
+import com.example.caffetteria.exceptionhandler.InvalidPasswordException;
 import com.example.caffetteria.model.Utente;
 import com.example.caffetteria.service.AuthenticationService;
 import com.example.caffetteria.service.UtenteService;
+import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -84,14 +90,32 @@ public class UtenteController {
 
 
 	@PostMapping("/register")
-	public ResponseEntity<AuthenticationResponse> register(
-			@RequestBody RegisterRequest request
+	public ResponseEntity<?> register(
+			@Valid @RequestBody RegisterRequest request, BindingResult result
 	) {
+
+		if (result.hasErrors()) {
+			return ResponseEntity.badRequest().body("Errore di validazione: " + result.getFieldError().getDefaultMessage());
+		}
 
 		return ResponseEntity.ok(authenticationService.register(request));
     }
 
-	@PostMapping("/atuhenticate")
+	@ExceptionHandler(InvalidPasswordException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ResponseEntity<ErrorResponse> handleInvalidPasswordException(InvalidPasswordException  ex) {
+		ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getMessage());
+		return ResponseEntity.badRequest().body(errorResponse);
+	}
+
+	@ExceptionHandler(ValidationException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ResponseEntity<ErrorResponse> handleValidationException(ValidationException ex) {
+		ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getMessage());
+		return ResponseEntity.badRequest().body(errorResponse);
+	}
+
+	@PostMapping("/authenticate")
 	public ResponseEntity<AuthenticationResponse> register(
 			@RequestBody AuthenticationRequest request
 	) {
