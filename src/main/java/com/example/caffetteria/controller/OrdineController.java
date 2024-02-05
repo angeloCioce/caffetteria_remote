@@ -7,6 +7,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,27 +20,27 @@ public class OrdineController {
 	private OrdineService ordineService;
 	@Autowired
 	private ModelMapper modelMapper;
-
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'MANUTENTORE')")
 	@GetMapping("/OrdineList")
 	public List<OrdineDto> getOrdine()
 	{
 
 		return ordineService.findAll();
 	}
-	
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'MANUTENTORE')")
 	@GetMapping("/getOrdine/{id_ordine}")
 	public ResponseEntity<OrdineDto> findOrdineById(@PathVariable("id_ordine") Long id)
 	{
 		OrdineDto ordineResponse = ordineService.findById(id);
 		return ResponseEntity.ok().body(ordineResponse);
 	}
-
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'MANUTENTORE')")
 	@PostMapping("/addOrdine")
 	public ResponseEntity<OrdineDto> saveNewOrdine(@RequestBody OrdineDto ordineDto) {
 		Ordine ordine = ordineService.save(ordineDto);
 		return new ResponseEntity<>(ordineDto, HttpStatus.CREATED);
 	}
-
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'MANUTENTORE')")
 	@DeleteMapping("/deleteOrdine/{id_ordine}")
 	public ResponseEntity<String> deleteOrdineById(@PathVariable("id_ordine") Long id)
 	{
@@ -47,6 +48,7 @@ public class OrdineController {
 		String apiResponse = ("Record deleted successfully");
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'MANUTENTORE')")
 	@PatchMapping("update/{id_ordine}")
 	public ResponseEntity<OrdineDto> updateOrdineById(@PathVariable("id_ordine") Long id, @RequestBody OrdineDto ordineDto) {
 		Ordine ordineRequest = modelMapper.map(ordineDto, Ordine.class);

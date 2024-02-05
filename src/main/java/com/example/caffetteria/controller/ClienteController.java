@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.caffetteria.model.Cliente;
@@ -22,14 +23,14 @@ public class ClienteController {
 
 	@Autowired
 	private ClienteService cli;
-	
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'MANUTENTORE')")
 	@GetMapping("/clienteList")
 	public List<ClienteDto> getClienti()
 	{
 		return cli.findAll().stream().map(cliente->modelMapper.map(cliente, ClienteDto.class))
 				.collect(Collectors.toList());
 	}
-	
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'MANUTENTORE')")
 	@GetMapping("/getCliente/{id_cliente}")
 	public ResponseEntity<ClienteDto> findClienteById(@PathVariable("id_cliente") Long id)
 	{
@@ -37,7 +38,7 @@ public class ClienteController {
 		ClienteDto clienteResponse = modelMapper.map(cliente, ClienteDto.class);
 		return ResponseEntity.ok().body(clienteResponse);
 	}
-	
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'MANUTENTORE')")
 	@PostMapping("/addCliente")
 	public ResponseEntity<ClienteDto> saveNewCliente(@RequestBody ClienteDto clienteDto)
 	{
@@ -46,7 +47,7 @@ public class ClienteController {
 		ClienteDto clienteResponse = modelMapper.map(cliente, ClienteDto.class);
 		return new ResponseEntity<>(clienteResponse, HttpStatus.CREATED);
 	}
-	
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'MANUTENTORE')")
 	@DeleteMapping("/deleteCliente/{id_cliente}")
 	public ResponseEntity<String> deleteClienteById(@PathVariable("id_cliente") Long id)
 	{
@@ -54,7 +55,7 @@ public class ClienteController {
 		String apiResponse = ("Record deleted successfully");
         return new ResponseEntity<>(apiResponse, HttpStatus.OK);
     }
-	
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'MANUTENTORE')")
 	@PatchMapping("update/{id_cliente}")
 	public ResponseEntity<ClienteDto> updateClienteById(@PathVariable("id_cliente") Long id, @RequestBody ClienteDto clienteDto)
 	{

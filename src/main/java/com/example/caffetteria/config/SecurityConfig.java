@@ -3,15 +3,16 @@ package com.example.caffetteria.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 @Configuration
@@ -24,32 +25,24 @@ public class SecurityConfig {
     private final AuthenticationProvider authenticationProvider;
 
     @Bean
-    @Order(1)
-    public SecurityFilterChain AdminSecurityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(req ->
-                        req.requestMatchers("/**")
-                                .permitAll()
-                                .anyRequest()
-                                .authenticated()
-                )
-                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
+    public InMemoryUserDetailsManager UserDetailsService()
+    {
+        UserDetails user = User.withUsername("username")
+                .password("password")
+                .roles("DIPENDENTE", "ADMIN", "MANUTENTORE")
+                .build();
+        return new InMemoryUserDetailsManager(user);
     }
 
     @Bean
-    @Order(2)
-    public SecurityFilterChain DipendenteSecurityFilterChain(HttpSecurity http) throws Exception {
-        http
+    public SecurityFilterChain LoginSecurityFilterChain(HttpSecurity http) throws Exception {
+        http.securityMatcher("utente/**")
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(req ->
-                        req.requestMatchers("/utente/**")
-                                .hasRole("DIPENDENTE")
-                                .anyRequest()
-                                .authenticated()
+                .authorizeHttpRequests((requests) -> {
+                            requests.requestMatchers("/utente/login").permitAll();
+                            requests.requestMatchers("/utente/register").permitAll();
+                            requests.anyRequest().authenticated();
+                        }
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider)

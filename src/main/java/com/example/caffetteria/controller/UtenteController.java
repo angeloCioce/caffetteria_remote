@@ -10,16 +10,20 @@ import com.example.caffetteria.exceptionhandler.InvalidPasswordException;
 import com.example.caffetteria.model.Utente;
 import com.example.caffetteria.service.AuthenticationService;
 import com.example.caffetteria.service.UtenteService;
+import com.example.caffetteria.userRole.UserRole;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Role;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,7 +38,8 @@ public class UtenteController {
 	private ModelMapper modelMapper;
 	@Autowired
 	private final AuthenticationService authenticationService;
-	
+
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'DIPENDENTE', 'MANUTENTORE')")
 	@GetMapping("/utenteList")
 	public List<UtenteDto> getUtente()
 	{
@@ -42,7 +47,7 @@ public class UtenteController {
 		return ut.findAll().stream().map(utente->modelMapper.map(utente, UtenteDto.class))
 				.collect(Collectors.toList());
 	}
-	
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'DIPENDENTE', 'MANUTENTORE')")
 	@GetMapping("/getUtente/{id_utente}")
 	public ResponseEntity<UtenteDto> findUtenteById(@PathVariable("id_utente") Long id)
 	{
@@ -51,7 +56,7 @@ public class UtenteController {
 		UtenteDto utenteResponse = modelMapper.map(utente, UtenteDto.class);
 		return ResponseEntity.ok().body(utenteResponse);
 	}
-	
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'DIPENDENTE', 'MANUTENTORE')")
 	@PostMapping("/addUtente")
 	public ResponseEntity<UtenteDto> saveNewUtente(@RequestBody UtenteDto utenteDto)
 	{
@@ -61,7 +66,7 @@ public class UtenteController {
 		UtenteDto utenteResponse = modelMapper.map(utente, UtenteDto.class);
 		return new ResponseEntity<>(utenteResponse, HttpStatus.CREATED);
 	}
-	
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'DIPENDENTE', 'MANUTENTORE')")
 	@DeleteMapping("/deleteUtente/{id_utente}")
 	public ResponseEntity<String> deleteUtenteById(@PathVariable("id_utente") Long id)
 	{
@@ -70,7 +75,7 @@ public class UtenteController {
 		String apiResponse = ("Record deleted successfully");
 		return new ResponseEntity<>(apiResponse, HttpStatus.OK);
 	}
-
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'DIPENDENTE', 'MANUTENTORE')")
 	@PatchMapping("update/{id_utente}")
 	public ResponseEntity<UtenteDto> updateUtenteById(@PathVariable("id_utente") Long id, @RequestBody UtenteDto utenteDto)
 	{
@@ -79,7 +84,7 @@ public class UtenteController {
 		UtenteDto utenteResponse = modelMapper.map(utente, UtenteDto.class);
 		return ResponseEntity.ok().body(utenteResponse);
 	}
-
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'DIPENDENTE', 'MANUTENTORE')")
 	@PatchMapping("/changePassword")
 	public ResponseEntity<String> changePasswordByUsername(@RequestParam String username, @RequestBody String newPassword) {
 		Utente utente = ut.loadUserByUsername(username);
@@ -115,7 +120,7 @@ public class UtenteController {
 		return ResponseEntity.badRequest().body(errorResponse);
 	}
 
-	@PostMapping("/authenticate")
+	@PostMapping("/login")
 	public ResponseEntity<AuthenticationResponse> register(
 			@RequestBody AuthenticationRequest request
 	) {
