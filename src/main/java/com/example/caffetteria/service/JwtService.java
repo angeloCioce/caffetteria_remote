@@ -5,6 +5,8 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +17,10 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@PropertySource("classpath:applicationKey.properties")
 public class JwtService {
-    private static final String SECRET_KEY = "4f3eebfe93ff3cf718cd47c8b4149eac0c2fc02865cb77f35172ea29c645c1df";
+    @Value("${jwt.secret-key}")
+    private String SECRET_KEY;
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()                    // we generate the parser
