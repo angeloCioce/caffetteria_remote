@@ -1,5 +1,6 @@
 package com.example.caffetteria.service;
 
+import com.example.caffetteria.config.TokenBlacklist;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -21,6 +22,10 @@ import java.util.function.Function;
 public class JwtService {
     @Value("${jwt.secret-key}")
     private String SECRET_KEY;
+    private final TokenBlacklist tokenBlacklist;
+    public JwtService(TokenBlacklist tokenBlacklist) {
+        this.tokenBlacklist = tokenBlacklist;
+    }
     private Claims extractAllClaims(String token) {
         return Jwts
                 .parserBuilder()                    // we generate the parser
@@ -70,5 +75,13 @@ public class JwtService {
     public boolean isTokenValid(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    }
+
+    public void addToBlacklist(String token) {
+        tokenBlacklist.addToBlacklist(token);
+    }
+
+    public boolean isTokenBlacklisted(String token) {
+        return tokenBlacklist.isTokenBlacklisted(token);
     }
 }
