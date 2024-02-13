@@ -21,6 +21,7 @@ import org.springframework.context.annotation.Role;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
@@ -109,14 +110,21 @@ public class UtenteController {
 	@ExceptionHandler(InvalidPasswordException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ResponseEntity<ErrorResponse> handleInvalidPasswordException(InvalidPasswordException  ex) {
-		ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getMessage());
+		ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
+		return ResponseEntity.badRequest().body(errorResponse);
+	}
+
+	@ExceptionHandler(BadCredentialsException.class)
+	@ResponseStatus(HttpStatus.BAD_REQUEST)
+	public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException ex) {
+		ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
 		return ResponseEntity.badRequest().body(errorResponse);
 	}
 
 	@ExceptionHandler(ValidationException.class)
 	@ResponseStatus(HttpStatus.BAD_REQUEST)
 	public ResponseEntity<ErrorResponse> handleValidationException(ValidationException ex) {
-		ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), ex.getMessage());
+		ErrorResponse errorResponse = new ErrorResponse(ex.getMessage(), HttpStatus.BAD_REQUEST);
 		return ResponseEntity.badRequest().body(errorResponse);
 	}
 

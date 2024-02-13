@@ -1,15 +1,16 @@
 package com.example.caffetteria.exceptionhandler;
 
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 public class ErrorResponse {
     private final String errorMessage;
     private final String errorCode;
 
-    public ErrorResponse(String errorMessage, String errorCode) {
+    public ErrorResponse(String errorMessage, HttpStatus errorCode) {
         this.errorMessage = errorMessage;
-        this.errorCode = errorCode;
+        this.errorCode = String.valueOf(errorCode);
     }
 
 }

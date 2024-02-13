@@ -11,6 +11,7 @@ import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -67,12 +68,16 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest req) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(
-                        req.getUsername(),
-                        req.getPassword()
-                )
-        );
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            req.getUsername(),
+                            req.getPassword()
+                    )
+            );
+        } catch (BadCredentialsException ex) {
+            throw new BadCredentialsException("Credenziali di accesso non valide. L'username o la password non sono corrette");
+        }
         var user = repository.findByUsername(req.getUsername()).orElseThrow();
         var jwtToken = jwtService.generateToken(user);
         return AuthenticationResponse

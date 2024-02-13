@@ -1,13 +1,17 @@
 package com.example.caffetteria.controller;
 
 import com.example.caffetteria.dto.ProdottoDto;
+import com.example.caffetteria.exceptionhandler.ErrorResponse;
+import com.example.caffetteria.exceptionhandler.InvalidPasswordException;
 import com.example.caffetteria.model.Prodotto;
 import com.example.caffetteria.service.ProdottoService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

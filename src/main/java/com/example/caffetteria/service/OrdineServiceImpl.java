@@ -55,22 +55,6 @@ public class OrdineServiceImpl implements OrdineService{
 
 		ordineRepository.save(ordine);
 
-	/*	*//*Set<Prodotti_Ordini> listaProdotti = new HashSet<>();
-		Double tot = 0D;
-		ordineDto.getProdotti().forEach(e ->{
-			Prodotto prodotto = prodottoRepository.findById(e.getId_prodotto())
-					.orElseThrow(() -> new IllegalArgumentException("Prodotto non trovato"));
-
-			Prodotti_Ordini p = new Prodotti_Ordini();
-			p.setOrdine(ordine);
-			p.setProdotto(prodotto);
-			p.setQuantita_ordine(e.getQuantita_ordine());
-			//tot += prodotto.getPrezzo_dettaglio() * e.getQuantita_ordine();
-			listaProdotti.add(p);
-		});
-		ordine.setProdottiOrdini(listaProdotti);*/
-
-
 		for (ProdottoDto prodottoDto : ordineDto.getProdotti()) {
 			Prodotto prodotto = prodottoRepository.findById(prodottoDto.getId_prodotto())
 					.orElseThrow(() -> new IllegalArgumentException("Prodotto non trovato"));
