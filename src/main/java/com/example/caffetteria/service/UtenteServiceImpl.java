@@ -2,7 +2,11 @@ package com.example.caffetteria.service;
 
 import com.example.caffetteria.model.Utente;
 import com.example.caffetteria.repository.UtenteRepository;
+import com.example.caffetteria.userRole.UserRole;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -64,11 +68,26 @@ public class UtenteServiceImpl implements UtenteService, UserDetailsService {
         return this.utenteRepository.findByUsername(username)
                 .orElseThrow(() -> new IllegalArgumentException("Utente non trovato con username: " + username));
     }
+
+    @Override
+    public Page<Utente> findAllPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return utenteRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Utente> findByRolePaginated(String ruolo, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return utenteRepository.findByRuolo(UserRole.valueOf(ruolo), pageable);
+    }
+
     public void changePassword(Long id, String newPassword){
         Utente utente = utenteRepository.findById(id)
                 .orElseThrow(()->new IllegalArgumentException("Utente non trovato"));
         utente.setPassword(newPassword);
         utenteRepository.save(utente);
     }
+
+
 
 }

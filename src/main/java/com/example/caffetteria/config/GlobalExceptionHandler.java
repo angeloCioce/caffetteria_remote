@@ -9,7 +9,6 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.server.MethodNotAllowedException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -30,6 +29,13 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<ErrorResponse> error500Handler(HttpRequestMethodNotSupportedException ex) {
         ErrorResponse errorResponse = new ErrorResponse("Stai cercando di fare qualcosa di impossibile,+ per favore riprova in un altro modo.", HttpStatus.BAD_REQUEST);
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ResponseEntity<ErrorResponse> errorIllegalArgumente(IllegalArgumentException ex) {
+        ErrorResponse errorResponse = new ErrorResponse("La cosa che stai cercando non esiste o non è disponibile.", HttpStatus.NOT_FOUND);
         return ResponseEntity.badRequest().body(errorResponse);
     }
 }

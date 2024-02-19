@@ -8,4 +8,6 @@ public class ClienteDto {
     private Long id;
     private String nome;
     private String cognome;
+    private int page;
+    private int size;
 }

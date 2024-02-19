@@ -1,12 +1,10 @@
 package com.example.caffetteria.controller;
 
 
-import com.example.caffetteria.dto.AuthenticationRequest;
-import com.example.caffetteria.dto.AuthenticationResponse;
-import com.example.caffetteria.dto.RegisterRequest;
-import com.example.caffetteria.dto.UtenteDto;
+import com.example.caffetteria.dto.*;
 import com.example.caffetteria.exceptionhandler.ErrorResponse;
 import com.example.caffetteria.exceptionhandler.InvalidPasswordException;
+import com.example.caffetteria.model.Prodotto;
 import com.example.caffetteria.model.Utente;
 import com.example.caffetteria.service.AuthenticationService;
 import com.example.caffetteria.service.UtenteService;
@@ -15,6 +13,7 @@ import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -132,4 +131,35 @@ public class UtenteController {
 
 		return ResponseEntity.ok(authenticationService.authenticate(request));
     }
+
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'DIPENDENTE', 'MANUTENTORE')")
+	@GetMapping("/pageableUtente")
+	public List<UtenteDto> getPageableUtente(@RequestParam(defaultValue = "0") int page,
+												 @RequestParam(defaultValue = "5") int size) {
+		Page<Utente> utentePage = ut.findAllPaginated(page, size);
+
+		return utentePage.getContent().stream()
+				.map(utente -> modelMapper.map(utente, UtenteDto.class))
+				.collect(Collectors.toList());
+	}
+
+	@PreAuthorize("hasAnyAuthority('ADMIN', 'DIPENDENTE', 'MANUTENTORE')")
+	@PostMapping("/utenteByRole")
+	public ResponseEntity<?> getUtenteByRole(@RequestBody UtenteDto request) {
+		String ruolo = request.getRuolo();
+		if (ruolo == null || ruolo.isEmpty()) {
+			return ResponseEntity.badRequest().body("Devi specificare un ruolo.");
+		}
+
+		Page<Utente> utentePage = ut.findByRolePaginated(ruolo, request.getPage(), request.getSize());
+		if (utentePage.isEmpty()) {
+			return ResponseEntity.badRequest().body("Ops, nessun utente trovato.");
+		}
+
+		List<UtenteDto> utenteDtoList = utentePage.getContent().stream()
+				.map(utente -> modelMapper.map(utente, UtenteDto.class))
+				.toList();
+
+		return ResponseEntity.ok().body(utenteDtoList);
+	}
 }

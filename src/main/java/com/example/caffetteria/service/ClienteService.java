@@ -3,6 +3,7 @@ package com.example.caffetteria.service;
 import java.util.List;
 
 import com.example.caffetteria.model.Cliente;
+import org.springframework.data.domain.Page;
 
 public interface ClienteService {
 
@@ -15,5 +16,7 @@ public interface ClienteService {
 	    void delete(Long id);
 
 		Cliente update(Long id, Cliente clienteRequest);
+
+		Page<Cliente> findAllPaginated(int page, int size);
 
 }

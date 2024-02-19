@@ -9,4 +9,6 @@ public class UtenteDto {
     private String username;
     private String password;
     private String ruolo;
+    private int page;
+    private int size;
 }
