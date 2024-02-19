@@ -4,7 +4,6 @@ package com.example.caffetteria.controller;
 import com.example.caffetteria.dto.*;
 import com.example.caffetteria.exceptionhandler.ErrorResponse;
 import com.example.caffetteria.exceptionhandler.InvalidPasswordException;
-import com.example.caffetteria.model.Prodotto;
 import com.example.caffetteria.model.Utente;
 import com.example.caffetteria.service.AuthenticationService;
 import com.example.caffetteria.service.UtenteService;

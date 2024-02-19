@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.example.caffetteria.dto.ClienteDto;
-import com.example.caffetteria.dto.UtenteDto;
-import com.example.caffetteria.model.Utente;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
