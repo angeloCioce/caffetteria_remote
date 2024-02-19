@@ -6,8 +6,14 @@ import com.example.caffetteria.model.*;
 import com.example.caffetteria.repository.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -118,6 +124,40 @@ public class OrdineServiceImpl implements OrdineService{
 			ordineDto.setNome_cliente(ordine.getCliente().getNome());
 			ordineDto.setCognome_cliente(ordine.getCliente().getCognome());
 		}
+
+		return ordineDto;
+	}
+
+	public Page<OrdineDto> getOrdersByYear(int year, int page, int size) {
+		LocalDate startDate = LocalDate.of(year, 1, 1);
+		LocalDate endDate = LocalDate.of(year, 12, 31);
+		Pageable pageable = PageRequest.of(page, size);
+		Page<Ordine> ordiniPage = ordineRepository.findByDataOrdineBetween(startDate.atStartOfDay(), endDate.atTime(23, 59, 59), pageable);
+		return ordiniPage.map(ordine -> mapToOrdineDto(ordine, page, size));
+	}
+
+	public Page<OrdineDto> getOrdersByMonthAndYear(int month, int year, int page, int size) {
+		YearMonth yearMonth = YearMonth.of(year, month);
+		LocalDate startDate = yearMonth.atDay(1);
+		LocalDate endDate = yearMonth.atEndOfMonth();
+		Pageable pageable = PageRequest.of(page, size);
+		Page<Ordine> ordiniPage = ordineRepository.findByDataOrdineBetween(startDate.atStartOfDay(), endDate.atTime(23, 59, 59), pageable);
+		return ordiniPage.map(ordine -> mapToOrdineDto(ordine, page, size));
+	}
+
+	private OrdineDto mapToOrdineDto(Ordine ordine, int page, int size) {
+		OrdineDto ordineDto = new OrdineDto();
+		ordineDto.setId(ordine.getId_ordine());
+		ordineDto.setData_ordine(ordine.getData_ordine());
+		ordineDto.setPrezzo_totale(ordine.getPrezzo_totale());
+		ordineDto.setId_utente(ordine.getUtente().getId_utente());
+		ordineDto.setUsername_utente(ordine.getUtente().getUsername());
+		ordineDto.setNome_cliente(ordine.getCliente().getNome());
+		ordineDto.setCognome_cliente(ordine.getCliente().getCognome());
+
+		// Imposta i valori di paginazione
+		ordineDto.setPage(page);
+		ordineDto.setSize(size);
 
 		return ordineDto;
 	}

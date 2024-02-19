@@ -12,4 +12,6 @@ public class ProdottoDto {
     private Double prezzo_dettaglio;
     private String tipologia;
     private Integer quantita_ordine;
+    private int page;
+    private int size;
 }

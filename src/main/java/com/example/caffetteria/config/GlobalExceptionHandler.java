@@ -5,9 +5,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.server.MethodNotAllowedException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
@@ -21,6 +23,13 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ResponseEntity<ErrorResponse> handleCredentialsNotFoundException(AuthenticationCredentialsNotFoundException ex) {
         ErrorResponse errorResponse = new ErrorResponse("Accesso negato: Non hai i permessi necessari per accedere a questa risorsa. Logga o registrati per continuare", HttpStatus.FORBIDDEN);
+        return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ResponseEntity<ErrorResponse> error500Handler(HttpRequestMethodNotSupportedException ex) {
+        ErrorResponse errorResponse = new ErrorResponse("Stai cercando di fare qualcosa di impossibile,+ per favore riprova in un altro modo.", HttpStatus.BAD_REQUEST);
         return ResponseEntity.badRequest().body(errorResponse);
     }
 }

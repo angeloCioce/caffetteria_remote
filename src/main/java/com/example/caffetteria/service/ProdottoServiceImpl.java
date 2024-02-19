@@ -3,6 +3,9 @@ package com.example.caffetteria.service;
 import com.example.caffetteria.model.Prodotto;
 import com.example.caffetteria.repository.ProdottoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -56,5 +59,17 @@ public class ProdottoServiceImpl implements ProdottoService{
 
         return prodottoRepository.save(prodotto);
 
+    }
+
+    @Override
+    public Page<Prodotto> findAllPaginated(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return prodottoRepository.findAll(pageable);
+    }
+
+    @Override
+    public Page<Prodotto> findByTipologiaPaginated(String tipologia, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return prodottoRepository.findByTipologia(tipologia, pageable);
     }
 }

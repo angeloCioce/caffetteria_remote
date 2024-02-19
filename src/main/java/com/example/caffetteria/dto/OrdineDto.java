@@ -3,7 +3,9 @@ package com.example.caffetteria.dto;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.List;
+import java.util.Map;
 
 @Data
 public class OrdineDto {
@@ -17,4 +19,6 @@ public class OrdineDto {
     private String nome_cliente;
     private String cognome_cliente;
     private List<ProdottoDto> prodotti;
+    private int page;
+    private int size;
 }
