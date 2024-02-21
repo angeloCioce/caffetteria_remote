@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,6 +59,7 @@ public class OrdineServiceImpl implements OrdineService{
 				.build();
 
 		ordineRepository.save(ordine);
+		List<Prodotti_Ordini> prodottiOrdiniList = new ArrayList<>();
 
 		for (ProdottoDto prodottoDto : ordineDto.getProdotti()) {
 			Prodotto prodotto = prodottoRepository.findById(prodottoDto.getId_prodotto())
@@ -70,6 +72,11 @@ public class OrdineServiceImpl implements OrdineService{
 			prezzoTotale += prodotto.getPrezzo_dettaglio() * prodottoDto.getQuantita_ordine();
 
 			prodottoOrdiniRepository.save(prodottiOrdini);
+			prodottiOrdiniList.add(prodottiOrdini);
+		}
+
+		if (prodottiOrdiniList.isEmpty()) {
+			throw new IllegalArgumentException("Nessun prodotto valido specificato nell'ordine.");
 		}
 
 		ordine.setPrezzo_totale(prezzoTotale);

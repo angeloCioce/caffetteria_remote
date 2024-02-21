@@ -34,8 +34,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ErrorResponse> errorIllegalArgumente(IllegalArgumentException ex) {
-        ErrorResponse errorResponse = new ErrorResponse("La cosa che stai cercando non esiste o non è disponibile.", HttpStatus.NOT_FOUND);
+    public ResponseEntity<ErrorResponse> errorIllegalArgument(IllegalArgumentException ex) {
+        ErrorResponse errorResponse = new ErrorResponse("L'utente o la risorsa che cerchi non esiste. Per favore riprova.", HttpStatus.NOT_FOUND);
         return ResponseEntity.badRequest().body(errorResponse);
     }
 }
